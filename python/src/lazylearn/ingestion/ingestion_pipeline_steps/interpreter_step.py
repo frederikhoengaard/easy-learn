@@ -47,7 +47,7 @@ class ColumnTypeInterpreter:
         less than 5% of the total number of values in the column.
 
         :param values: list of values of any type
-        :return: True if attr is categorical, False otherwise
+        :return: True if column is categorical, False otherwise
         """
         n_total = len(values)
         n_unique = len(set(values))
@@ -60,9 +60,12 @@ class ColumnTypeInterpreter:
     @staticmethod
     def numeric_test(types: list):
         """
+        Tests whether a column is of numeric tyoe.
+        This is decided as the case if all values
+        of a column is either float or int.
 
-        :param types:
-        :return:
+        :param types: list of type objects
+        :return: True if column is numeric, False otherwise
         """
         return all([item == float or item == int for item in set(types)])
 
