@@ -1,3 +1,4 @@
+import pandas as pd
 from ingestion.ingestion_pipeline_steps.summary_stats_step import (  # noqa
     SummaryStatistics,
 )
@@ -7,7 +8,7 @@ from sklearn.datasets import load_iris
 
 def test_iris_stats():
     pipeline = IngestionPipeline()
-    pipeline.df = load_iris(return_X_y=True, as_frame=True)[0]
+    pipeline.df = pd.concat(load_iris(return_X_y=True, as_frame=True), axis=1)
     pipeline.column_type_map = {
         "sepal length (cm)": "numeric",
         "sepal width (cm)": "numeric",

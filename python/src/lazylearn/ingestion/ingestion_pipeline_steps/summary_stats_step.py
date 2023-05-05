@@ -15,7 +15,8 @@ class SummaryStatistics(PipelineStep):
             for column in pipeline.column_type_map
             if pipeline.column_type_map[column] == "numeric"
         ]
-        df = pipeline.df
 
         for attr in numeric_attributes:
-            pipeline.summary_stats[attr] = pipeline.df[attr].describe().to_dict()
+            pipeline.summary_stats[attr] = (
+                pipeline.df[attr].describe().to_dict()
+            )  # noqa

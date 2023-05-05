@@ -23,18 +23,48 @@ class ColumnTypeInterpreter:
         pipeline.column_type_map = column_types
 
     def analyze_column(self, column: Series):
-        # is it numeric?
-        values = set(column)
-        types = set([type(value) for value in values])
+        """
 
-        if self.numeric_test(types):
+        :param column:
+        :return:
+        """
+        values = column.tolist()
+        types = [type(value) for value in values]
+
+        if self.categorical_test(values):
+            return "categorical"
+
+        elif self.numeric_test(types):
             return "numeric"
 
         return "object"
 
     @staticmethod
-    def numeric_test(types: set):
-        return all([item == float or item == int for item in types])
+    def categorical_test(values: list):
+        """
+        Tests whether a column is of categorical type.
+        This is decided as the case if the number of unique values is
+        less than 5% of the total number of values in the column.
+
+        :param values: list of values of any type
+        :return: True if attr is categorical, False otherwise
+        """
+        n_total = len(values)
+        n_unique = len(set(values))
+        percentage_unique = n_unique / n_total
+
+        if percentage_unique < 0.05:
+            return True
+        return False
+
+    @staticmethod
+    def numeric_test(types: list):
+        """
+
+        :param types:
+        :return:
+        """
+        return all([item == float or item == int for item in set(types)])
 
     @staticmethod
     def string_test(types: set):
@@ -42,8 +72,4 @@ class ColumnTypeInterpreter:
 
     @staticmethod
     def date_check(types: set):
-        raise NotImplementedError
-
-    @staticmethod
-    def categorical_test(values: set):
         raise NotImplementedError

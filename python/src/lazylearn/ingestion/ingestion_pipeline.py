@@ -2,7 +2,9 @@ from ingestion.ingestion_pipeline_steps.data_parser_step import DataSourceParser
 from ingestion.ingestion_pipeline_steps.interpreter_step import (  # noqa
     ColumnTypeInterpreter,
 )
-from ingestion.ingestion_pipeline_steps.summary_stats_step import SummaryStatistics
+from ingestion.ingestion_pipeline_steps.summary_stats_step import (  # noqa
+    SummaryStatistics,
+)
 from pipeline.pipeline import IngestionPipeline
 
 
