@@ -1,4 +1,6 @@
-from pipeline.pipeline import IngestionPipeline, PipelineStep
+from ingestion.ingestion_pipeline_steps.data_parser_step import DataSourceParser  # noqa
+from ingestion.ingestion_pipeline_steps.interpreter_step import ColumnTypeInterpreter # noqa
+from pipeline.pipeline import IngestionPipeline
 
 
 class Ingestion:
@@ -11,7 +13,7 @@ class Ingestion:
 
         pipeline.add(DataSourceParser(data))
 
-        pipeline.add(ColumnInterpreter())
+        pipeline.add(ColumnTypeInterpreter())
 
         pipeline.run()
 
