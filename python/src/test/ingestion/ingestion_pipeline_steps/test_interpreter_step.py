@@ -1,9 +1,11 @@
-from ingestion.ingestion_pipeline_steps.interpreter_step import ColumnTypeInterpreter
+from ingestion.ingestion_pipeline_steps.interpreter_step import (  # noqa
+    ColumnTypeInterpreter,
+)
 from pipeline.pipeline import IngestionPipeline
 from sklearn.datasets import load_iris
 
 
-def test_iris_okay():
+def test_iris_types_numeric():
     pipeline = IngestionPipeline()
     pipeline.df = load_iris(return_X_y=True, as_frame=True)[0]
     pipeline.add(ColumnTypeInterpreter())

@@ -6,6 +6,8 @@ from tqdm import tqdm
 class ColumnTypeInterpreter:
     def apply(self, pipeline: IngestionPipeline):
         """
+        This method is responsible for inferring the
+        types of the columns of the project dataset
 
         :param pipeline: parent IngestionPipeline
         :return:
@@ -14,7 +16,9 @@ class ColumnTypeInterpreter:
         column_types = {}
 
         for column_name in tqdm(columns):
-            column_types[column_name] = self.analyze_column(pipeline.df[column_name])  # noqa
+            column_types[column_name] = self.analyze_column(
+                pipeline.df[column_name]
+            )  # noqa
 
         pipeline.column_type_map = column_types
 
@@ -38,4 +42,8 @@ class ColumnTypeInterpreter:
 
     @staticmethod
     def date_check(types: set):
+        raise NotImplementedError
+
+    @staticmethod
+    def categorical_test(values: set):
         raise NotImplementedError

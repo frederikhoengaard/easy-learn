@@ -28,6 +28,7 @@ class IngestionPipeline(Pipeline):
         self.raw_data = None
         self.df: DataFrame = None
         self.column_type_map: dict = None
+        self.summary_stats: dict = {}
 
     def response(self):
         return Dataset
