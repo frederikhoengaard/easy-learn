@@ -13,6 +13,11 @@ class Ingestion:
         pass
 
     def run(self, data):
+        """
+
+        :param data:
+        :return:
+        """
         pipeline = IngestionPipeline()
         pipeline.raw_data = data
 
