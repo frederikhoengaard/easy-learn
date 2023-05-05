@@ -6,6 +6,7 @@ verify_ssl = true
 [packages]
 loguru = "==0.6.*"
 pandas = "==1.5.*"
+scikit-learn = "*"
 
 [dev-packages]
 black = "==23.*"
