@@ -1,4 +1,5 @@
 # lazy-learn
+0.0.1
 
 ---
 
@@ -10,3 +11,10 @@ The aim of lazy-learn is exactly that. Given a dataset, easy-learn will analyse 
 
 ## Usage
 
+Using lazy-learn revolves around the `LazyLearner` class. You can think of it as a kind of project, and it is the wrapper for any experiment within lazy-learn.
+
+## Installation
+
+```
+pip install lazy-learn
+```
