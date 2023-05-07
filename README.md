@@ -1,4 +1,4 @@
-![lazy-learn logo](doc/logo/transparent.png)
+![lazy-learn logo](doc/logo/transparent_small.png)
 0.0.1
 
 ---
