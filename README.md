@@ -18,8 +18,6 @@ lazy-learn requires:
 - pandas
 - scikit-learn
 
----
-
 ### User Installation 
 ```
 pip install lazy-learn
