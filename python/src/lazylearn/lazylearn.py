@@ -1,7 +1,21 @@
+from ingestion.ingestion_pipeline import Ingestion
+
+
 class LazyLearner:
     def __init__(self):
-        self.project = None
+        self.dataset = None
 
     def create_project(self, data, target, task="infer"):
         # ingest data
-        pass
+        ingestion_response = Ingestion().run(data)
+
+        # preprocess
+
+        # set modelling configurations
+
+        # train
+
+        # eval
+
+
+
