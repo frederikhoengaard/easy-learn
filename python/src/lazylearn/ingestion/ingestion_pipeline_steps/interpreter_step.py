@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from pandas import Series
 from pipeline.pipeline import IngestionPipeline
@@ -33,16 +34,20 @@ class ColumnTypeInterpreter:
         values = column.tolist()
         types = [type(value) for value in values]
 
+        column_type = None
+
         if self.categorical_test(values):
-            return "categorical"
-
+            column_type = "categorical"
         elif self.numeric_test(types):
-            return "numeric"
+            column_type = "numeric"
 
-        elif self.datetime_check(column):
-            return "datetime"
-        else:
-            return "object"
+        if self.datetime_check(column) and not self.numeric_test(types):
+            column_type = "datetime"
+
+        if column_type is None:
+            column_type = "object"
+
+        return column_type
 
     @staticmethod
     def categorical_test(values: list):
@@ -79,8 +84,10 @@ class ColumnTypeInterpreter:
         raise NotImplementedError
 
     def datetime_check(self, column: Series):
+        if self.df[column.name].dtype.type == np.datetime64:
+            return True
         try:
-            self.df[column.name] = pd.to_datetime(column)
+            self.df[column.name] = pd.to_datetime(self.df[column.name])
             return True
         except Exception as e:  # noqa
             return False

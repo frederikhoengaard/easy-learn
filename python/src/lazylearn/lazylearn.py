@@ -7,7 +7,7 @@ class LazyLearner:
 
     def create_project(self, data, target, task="infer"):
         # ingest data
-        ingestion_response = Ingestion().run(data)  # noqa
+        self.dataset = Ingestion().run(data)  # noqa
 
         # preprocess
 
