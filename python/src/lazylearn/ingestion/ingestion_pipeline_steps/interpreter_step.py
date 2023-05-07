@@ -82,5 +82,5 @@ class ColumnTypeInterpreter:
         try:
             self.df[column.name] = pd.to_datetime(column)
             return True
-        except:
+        except Exception as e:  # noqa
             return False
