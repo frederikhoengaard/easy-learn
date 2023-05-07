@@ -1,4 +1,5 @@
-![lazy-learn logo](doc/logo/transparent_small.png)
+<img align="left" width="500" src="doc/logo/transparent_small.png">
+
 0.0.1
 
 ---
