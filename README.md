@@ -8,9 +8,6 @@
 
 The aim of lazy-learn is exactly that. Given a dataset, easy-learn will analyse types and distributions of attributes, preprocess, feature-engineer and ultimately train models to be used for further evaluation or inference. 
 
----
-
-
 ## Usage
 
 Using lazy-learn revolves around the `LazyLearner` class. You can think of it as a kind of project, and it is the wrapper for any experiment within lazy-learn.
