@@ -17,8 +17,6 @@ Using lazy-learn revolves around the `LazyLearner` class. You can think of it as
 
 ## Installation
 
----
-
 ### Dependencies
 
 lazy-learn requires:
