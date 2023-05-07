@@ -17,6 +17,23 @@ Using lazy-learn revolves around the `LazyLearner` class. You can think of it as
 
 ## Installation
 
+---
+
+### Dependencies
+
+lazy-learn requires:
+
+- pandas
+- scikit-learn
+
+---
+
+### User Installation 
 ```
 pip install lazy-learn
 ```
+
+## Help and Support
+### Documentation
+
+### Citation
