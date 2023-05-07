@@ -1,7 +1,15 @@
+from pandas import DataFrame
+
+
 class Dataset:
-    def __init__(self):
+    def __init__(self, df: DataFrame, column_type_map: dict):
         self.name = None
         self.description = None
+        self.df = df
+        self.column_type_map = column_type_map
+
+    def save(self):
+        raise NotImplementedError
 
 
 class Model:

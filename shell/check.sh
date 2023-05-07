@@ -15,7 +15,7 @@ pipenv run flake8 python/src/lazylearn/
 pipenv run flake8 python/src/test/
 echo "--- pytest ---"
 if [[ "$OSTYPE" == "msys" ]]; then
-  PYTHONPATH="./python/src/main;$PYTHONPATH" pipenv run pytest python/src/test/
+  PYTHONPATH="./python/src/lazylearn;$PYTHONPATH" pipenv run pytest python/src/test/
 else
-  PYTHONPATH=./python/src/main:$PYTHONPATH pipenv run pytest python/src/test/
+  PYTHONPATH=./python/src/lazylearn:$PYTHONPATH pipenv run pytest python/src/test/
 fi
