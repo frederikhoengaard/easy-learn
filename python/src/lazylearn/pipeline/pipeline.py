@@ -31,4 +31,4 @@ class IngestionPipeline(Pipeline):
         self.summary_stats: dict = {}
 
     def response(self):
-        return Dataset
+        return Dataset(df=self.df, column_type_map=self.column_type_map)

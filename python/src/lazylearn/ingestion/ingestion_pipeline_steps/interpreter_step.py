@@ -1,3 +1,4 @@
+import pandas as pd
 from pandas import Series
 from pipeline.pipeline import IngestionPipeline
 from tqdm import tqdm
@@ -12,6 +13,7 @@ class ColumnTypeInterpreter:
         :param pipeline: parent IngestionPipeline
         :return:
         """
+        self.df = pipeline.df
         columns = pipeline.df.columns
         column_types = {}
 
@@ -37,7 +39,10 @@ class ColumnTypeInterpreter:
         elif self.numeric_test(types):
             return "numeric"
 
-        return "object"
+        elif self.datetime_check(column):
+            return "datetime"
+        else:
+            return "object"
 
     @staticmethod
     def categorical_test(values: list):
@@ -73,6 +78,9 @@ class ColumnTypeInterpreter:
     def string_test(types: set):
         raise NotImplementedError
 
-    @staticmethod
-    def date_check(types: set):
-        raise NotImplementedError
+    def datetime_check(self, column: Series):
+        try:
+            self.df[column.name] = pd.to_datetime(column)
+            return True
+        except:
+            return False

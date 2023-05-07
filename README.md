@@ -1,4 +1,4 @@
-# lazy-learn
+![lazy-learn logo](docs/logo/transparent.png)
 0.0.1
 
 ---
