@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
-from pandas import Series
+from pandas import DataFrame, Series
 from pipeline.pipeline import IngestionPipeline
 from tqdm import tqdm
 
 
 class ColumnTypeInterpreter:
+    def __int__(self):
+        self.df: DataFrame = None
+
     def apply(self, pipeline: IngestionPipeline):
         """
         This method is responsible for inferring the
@@ -38,6 +41,8 @@ class ColumnTypeInterpreter:
 
         if self.categorical_test(values):
             column_type = "categorical"
+        elif self.numeric_test(types) and self.id_check(types, values):
+            column_type = "id"
         elif self.numeric_test(types):
             column_type = "numeric"
 
@@ -77,17 +82,45 @@ class ColumnTypeInterpreter:
         :param types: list of type objects
         :return: True if column is numeric, False otherwise
         """
-        return all([item == float or item == int for item in set(types)])
+        return all(
+            [item == float or item == int for item in set(types) if item is not None]
+        )
 
     @staticmethod
     def string_test(types: set):
         raise NotImplementedError
 
     def datetime_check(self, column: Series):
-        if self.df[column.name].dtype.type == np.datetime64:
+        """
+
+        :param column:
+        :return:
+        """
+        col_name = str(column.name)
+
+        # if type of column is actually datetime
+        if self.df[col_name].dtype.type == np.datetime64:
             return True
-        try:
-            self.df[column.name] = pd.to_datetime(self.df[column.name])
-            return True
-        except Exception as e:  # noqa
-            return False
+
+        # if date or time is in column name and can be cast as date
+        if "date" in col_name.lower() or "time" in col_name.lower():
+            try:
+                self.df[col_name] = pd.to_datetime(self.df[col_name])
+                return True
+            except Exception as e:  # noqa
+                pass
+
+        # if format of values look like dates
+
+        return False
+
+    def id_check(self, types, values):
+        """
+
+        :param types:
+        :param values:
+        :return:
+        """
+        return all([item == int for item in set(types) if item is not None]) and len(
+            set(values)
+        ) == len(self.df)
