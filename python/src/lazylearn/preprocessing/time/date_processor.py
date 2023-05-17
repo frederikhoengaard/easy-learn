@@ -20,7 +20,9 @@ def date_processor(dataset: Dataset) -> Dataset:
         dataset.df[f"{date_column}_week"] = (
             dataset.df[date_column].dt.isocalendar().week
         )
-        dataset.df[f"{date_column}_day"] = dataset.df[date_column].dt.isocalendar().day
+        dataset.df[f"{date_column}_day"] = (
+            dataset.df[date_column].dt.isocalendar().day
+        )  # noqa
 
         new_categorical_cols.append(f"{date_column}_year")
         new_categorical_cols.append(f"{date_column}_month")

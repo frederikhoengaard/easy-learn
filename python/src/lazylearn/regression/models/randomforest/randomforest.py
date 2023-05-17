@@ -1,6 +1,5 @@
 from models.models import Dataset
 from pipeline.pipeline import RegressionPipeline
-from sklearn.ensemble import RandomForestRegressor
 
 
 class RandomForestRegressionPipeline(RegressionPipeline):

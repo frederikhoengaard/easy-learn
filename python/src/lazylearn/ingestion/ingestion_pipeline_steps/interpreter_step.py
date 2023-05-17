@@ -87,7 +87,11 @@ class ColumnTypeInterpreter:
         :return: True if column is numeric, False otherwise
         """
         return all(
-            [item == float or item == int for item in set(types) if item is not None]
+            [
+                item == float or item == int
+                for item in set(types)
+                if item is not None  # noqa
+            ]
         )
 
     @staticmethod
@@ -125,9 +129,13 @@ class ColumnTypeInterpreter:
         :param values:
         :return:
         """
-        return all([item == int for item in set(types) if item is not None]) and len(
+        return all(
+            [item == int for item in set(types) if item is not None]
+        ) and len(  # noqa
             set(values)
-        ) == len(self.df)
+        ) == len(
+            self.df
+        )
 
     @staticmethod
     def build_type_collections(column_type_map):
@@ -135,7 +143,9 @@ class ColumnTypeInterpreter:
 
         for data_type in ["datetime", "numeric", "categorical"]:
             collections[data_type] = [
-                col for col in column_type_map if column_type_map[col] == data_type
+                col
+                for col in column_type_map
+                if column_type_map[col] == data_type  # noqa
             ]
 
         return collections
