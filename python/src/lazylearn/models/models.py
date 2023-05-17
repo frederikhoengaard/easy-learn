@@ -2,11 +2,19 @@ from pandas import DataFrame
 
 
 class Dataset:
-    def __init__(self, df: DataFrame, column_type_map: dict):
+    def __init__(
+        self,
+        df: DataFrame,
+        column_type_map: dict,
+        summary_stats: dict,
+        type_collections: dict,
+    ):
         self.name = None
         self.description = None
         self.df = df
         self.column_type_map = column_type_map
+        self.summary_stats = summary_stats
+        self.type_collections = type_collections
 
     def save(self):
         raise NotImplementedError

@@ -27,6 +27,10 @@ class ColumnTypeInterpreter:
             )  # noqa
 
         pipeline.column_type_map = column_types
+        if "unknown" in pipeline.column_type_map.values():
+            pipeline.needs_type_map = True
+
+        pipeline.type_collections = self.build_type_collections(column_types)
 
     def analyze_column(self, column: Series):
         """
@@ -50,7 +54,7 @@ class ColumnTypeInterpreter:
             column_type = "datetime"
 
         if column_type is None:
-            column_type = "object"
+            column_type = "unknown"
 
         return column_type
 
@@ -110,7 +114,7 @@ class ColumnTypeInterpreter:
             except Exception as e:  # noqa
                 pass
 
-        # if format of values look like dates
+        # if format of values looks like dates
 
         return False
 
@@ -124,3 +128,14 @@ class ColumnTypeInterpreter:
         return all([item == int for item in set(types) if item is not None]) and len(
             set(values)
         ) == len(self.df)
+
+    @staticmethod
+    def build_type_collections(column_type_map):
+        collections = {}
+
+        for data_type in ["datetime", "numeric", "categorical"]:
+            collections[data_type] = [
+                col for col in column_type_map if column_type_map[col] == data_type
+            ]
+
+        return collections

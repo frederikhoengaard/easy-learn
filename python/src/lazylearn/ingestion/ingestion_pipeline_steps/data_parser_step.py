@@ -17,5 +17,6 @@ class DataSourceParser(PipelineStep):
 
         if isinstance(pipeline.raw_data, DataFrame):
             pipeline.df = pipeline.raw_data
+        # check if raw data is a path to a csv file and read it into csv
         else:
             raise DataSourceError
