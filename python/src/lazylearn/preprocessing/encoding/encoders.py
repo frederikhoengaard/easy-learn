@@ -1,4 +1,4 @@
-from models.models import Dataset
+from pandas import DataFrame
 from pipeline.pipeline import ModelPipeline
 
 
@@ -21,15 +21,25 @@ class OrdinalConverter:
 
     def fit(self, pipeline: ModelPipeline):
         for var in self.cat_vars:
-            pipeline.train_features_df = self.convert(pipeline.train_features_df, var)
+            pipeline.train_features_df = self.convert(
+                pipeline.train_features_df, var
+            )  # noqa
             pipeline.feature_list.append(var)
 
-    def convert(self, df, col_name):
+    def convert(self, df: DataFrame, col_name: str) -> DataFrame:
         """
+        Encodes a categorical column ordinally.
+        Currently only the "freq" method is supported,
+        and it encodes a value with an integer id by
+        increasing frequency i.e. more frequent values
+        receive a higher encoding
 
-        :param df:
-        :param col_name:
-        :return:
+        Note that this should only be done on the training
+        data!
+
+        :param df: pandas DataFrame of features
+        :param col_name: column to consider
+        :return: transformed DataFrame
         """
         if self.method == "freq":
             self.cat_freqs[col_name] = {}
@@ -43,7 +53,7 @@ class OrdinalConverter:
                 [(key, val) for key, val in self.cat_freqs[col_name].items()],
                 key=lambda x: x[1],
             )
-            print(freq_pairs)
+
             self.cat_maps[col_name] = {key: val for key, val in freq_pairs}
 
             df[col_name] = df[col_name].apply(
@@ -54,3 +64,15 @@ class OrdinalConverter:
             return df
         else:
             raise ValueError("Unsupported encoding method, try [freq]")
+
+    def predict(self, pipeline: ModelPipeline):
+        df = pipeline.tmp_test
+
+        for var in self.cat_vars:
+            df[var] = df[var].apply(
+                lambda x: self.cat_maps[var][x]
+                if x in self.cat_maps[var]
+                else -2  # noqa
+            )
+
+        pipeline.tmp_test = df

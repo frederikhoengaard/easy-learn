@@ -24,6 +24,9 @@ class PipelineStep:
     def fit(self, pipeline: Pipeline):
         pass
 
+    def predict(self, pipeline: Pipeline):
+        pass
+
 
 class IngestionPipeline(Pipeline):
     def __init__(self):
@@ -49,10 +52,18 @@ class ModelPipeline(Pipeline):
         super().__init__()
         self._is_fitted = False
         self.feature_list: list = []
+        self.tmp_test = None
+        self.tmp_pred = None
+        self.target = None
 
     def fit(self):
         [step.fit(self) for step in self._steps]
         self._is_fitted = True
+
+    def predict(self):
+        assert self._is_fitted
+        [step.predict(self) for step in self._steps]
+        return self.tmp_pred
 
 
 class RegressionPipeline(ModelPipeline):

@@ -2,7 +2,10 @@ from ingestion.ingestion_pipeline import Ingestion
 from model_selection.splitters import test_train_splitter
 from preprocessing.time.date_processor import date_processor
 from preprocessing.time.duration import duration_builder
-from regression.models.randomforest.randomforest import RandomForestRegressionRunner
+from regression.models.randomforest.randomforest import (  # noqa
+    RandomForestRegressionRunner,
+)
+from sklearn.metrics import mean_absolute_error
 
 
 class LazyLearner:
@@ -40,9 +43,25 @@ class LazyLearner:
         # set modelling configurations
 
     def run_autopilot(self):
+        """
+        TODO: Everything here must be abstracted away into strategies
+        TODO: such that several models are run and their scores are added to
+        TODO: the leaderboard
+
+        :return:
+        """
+
         simple_random_forest = RandomForestRegressionRunner(
-            target=self.target, dataset=self.dataset
+            target=self.target,
+            dataset=self.dataset,
+            random_state=self.random_state,  # noqa
         )
         simple_random_forest.fit()
 
+        # get holdout scores
+        simple_random_forest.predict(self.dataset.partitions["test"])
+        simple_random_forest.pipeline.holdout_score = mean_absolute_error(
+            self.dataset.partitions["test"][self.target],
+            simple_random_forest.pipeline.tmp_pred,
+        )
         return simple_random_forest
