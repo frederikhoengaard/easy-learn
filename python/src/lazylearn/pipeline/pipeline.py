@@ -1,7 +1,7 @@
 from typing import List
 
 from models.models import Dataset
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 
 class Pipeline:
@@ -19,6 +19,9 @@ class Pipeline:
 
 class PipelineStep:
     def apply(self, pipeline: Pipeline):
+        pass
+
+    def fit(self, pipeline: Pipeline):
         pass
 
 
@@ -44,8 +47,19 @@ class IngestionPipeline(Pipeline):
 class ModelPipeline(Pipeline):
     def __init__(self):
         super().__init__()
+        self._is_fitted = False
+        self.feature_list: list = []
+
+    def fit(self):
+        [step.fit(self) for step in self._steps]
+        self._is_fitted = True
 
 
 class RegressionPipeline(ModelPipeline):
     def __init__(self):
         super().__init__()
+        self.train_features_df: DataFrame = None
+        self.train_targets: Series = None
+        self.holdout_features_df: DataFrame = None
+        self.holdout_targets: Series = None
+        self.holdout_score: float = None
