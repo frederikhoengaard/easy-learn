@@ -1,10 +1,14 @@
+import numpy as np
 import pandas as pd
-from pandas import Series
+from pandas import DataFrame, Series
 from pipeline.pipeline import IngestionPipeline
 from tqdm import tqdm
 
 
 class ColumnTypeInterpreter:
+    def __int__(self):
+        self.df: DataFrame = None
+
     def apply(self, pipeline: IngestionPipeline):
         """
         This method is responsible for inferring the
@@ -23,6 +27,10 @@ class ColumnTypeInterpreter:
             )  # noqa
 
         pipeline.column_type_map = column_types
+        if "unknown" in pipeline.column_type_map.values():
+            pipeline.needs_type_map = True
+
+        pipeline.type_collections = self.build_type_collections(column_types)
 
     def analyze_column(self, column: Series):
         """
@@ -33,16 +41,22 @@ class ColumnTypeInterpreter:
         values = column.tolist()
         types = [type(value) for value in values]
 
+        column_type = None
+
         if self.categorical_test(values):
-            return "categorical"
-
+            column_type = "categorical"
+        elif self.numeric_test(types) and self.id_check(types, values):
+            column_type = "id"
         elif self.numeric_test(types):
-            return "numeric"
+            column_type = "numeric"
 
-        elif self.datetime_check(column):
-            return "datetime"
-        else:
-            return "object"
+        if self.datetime_check(column) and not self.numeric_test(types):
+            column_type = "datetime"
+
+        if column_type is None:
+            column_type = "unknown"
+
+        return column_type
 
     @staticmethod
     def categorical_test(values: list):
@@ -72,15 +86,66 @@ class ColumnTypeInterpreter:
         :param types: list of type objects
         :return: True if column is numeric, False otherwise
         """
-        return all([item == float or item == int for item in set(types)])
+        return all(
+            [
+                item == float or item == int
+                for item in set(types)
+                if item is not None  # noqa
+            ]
+        )
 
     @staticmethod
     def string_test(types: set):
         raise NotImplementedError
 
     def datetime_check(self, column: Series):
-        try:
-            self.df[column.name] = pd.to_datetime(column)
+        """
+
+        :param column:
+        :return:
+        """
+        col_name = str(column.name)
+
+        # if type of column is actually datetime
+        if self.df[col_name].dtype.type == np.datetime64:
             return True
-        except Exception as e:  # noqa
-            return False
+
+        # if date or time is in column name and can be cast as date
+        if "date" in col_name.lower() or "time" in col_name.lower():
+            try:
+                self.df[col_name] = pd.to_datetime(self.df[col_name])
+                return True
+            except Exception as e:  # noqa
+                pass
+
+        # if format of values looks like dates
+
+        return False
+
+    def id_check(self, types, values):
+        """
+
+        :param types:
+        :param values:
+        :return:
+        """
+        return all(
+            [item == int for item in set(types) if item is not None]
+        ) and len(  # noqa
+            set(values)
+        ) == len(
+            self.df
+        )
+
+    @staticmethod
+    def build_type_collections(column_type_map):
+        collections = {}
+
+        for data_type in ["datetime", "numeric", "categorical"]:
+            collections[data_type] = [
+                col
+                for col in column_type_map
+                if column_type_map[col] == data_type  # noqa
+            ]
+
+        return collections
