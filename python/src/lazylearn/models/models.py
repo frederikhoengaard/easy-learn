@@ -15,6 +15,7 @@ class Dataset:
         self.column_type_map = column_type_map
         self.summary_stats = summary_stats
         self.type_collections = type_collections
+        self.partitions: dict = {}
 
     def save(self):
         raise NotImplementedError

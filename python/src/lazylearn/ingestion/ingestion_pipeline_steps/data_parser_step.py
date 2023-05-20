@@ -1,4 +1,6 @@
+import pandas as pd
 from errors.errors import DataSourceError
+from ingestion.utils.csv import csv_check
 from pandas import DataFrame
 from pipeline.pipeline import IngestionPipeline, PipelineStep
 
@@ -18,5 +20,7 @@ class DataSourceParser(PipelineStep):
         if isinstance(pipeline.raw_data, DataFrame):
             pipeline.df = pipeline.raw_data
         # check if raw data is a path to a csv file and read it into csv
+        elif csv_check(pipeline.df):
+            pipeline.df = pd.read_csv(pipeline.raw_data)
         else:
             raise DataSourceError
