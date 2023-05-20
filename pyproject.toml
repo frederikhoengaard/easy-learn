@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lazylearn"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Frederik P. Høngaard", email="mail@frederikhoengaard.com" },
 ]

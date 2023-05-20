@@ -9,6 +9,7 @@ pandas = "==1.5.*"
 scikit-learn = "*"
 tqdm = "*"
 jupyter = "*"
+xgboost = "*"
 
 [dev-packages]
 black = "==23.*"
