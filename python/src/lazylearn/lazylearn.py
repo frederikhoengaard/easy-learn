@@ -5,7 +5,7 @@ from preprocessing.time.duration import duration_builder
 from regression.models.randomforest.randomforest import (  # noqa
     RandomForestRegressionRunner,
 )
-from sklearn.metrics import mean_absolute_error
+from strategies.strategy_builder import StrategyBuilder
 
 
 class LazyLearner:
@@ -50,18 +50,9 @@ class LazyLearner:
 
         :return:
         """
+        sb = StrategyBuilder(task=self.task, dataset=self.dataset, target=self.target, random_state=self.random_state)
+        self.leaderboard = sorted([model for model in sb.models], key=lambda x: x.score)
 
-        simple_random_forest = RandomForestRegressionRunner(
-            target=self.target,
-            dataset=self.dataset,
-            random_state=self.random_state,  # noqa
-        )
-        simple_random_forest.fit()
+    def get_leaderboard(self):
+        return [(item.name, item.score) for item in self.leaderboard]
 
-        # get holdout scores
-        simple_random_forest.predict(self.dataset.partitions["test"])
-        simple_random_forest.pipeline.holdout_score = mean_absolute_error(
-            self.dataset.partitions["test"][self.target],
-            simple_random_forest.pipeline.tmp_pred,
-        )
-        return simple_random_forest

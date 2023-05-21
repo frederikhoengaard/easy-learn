@@ -7,7 +7,8 @@ from regression.models.randomforest.random_forest_steps.regressor_step import (
 
 
 class RandomForestRegressionRunner:
-    def __init__(self, target, dataset, random_state=42):
+    def __init__(self, target, dataset, random_state=None):
+        self.name = "RandomForestRegressor"
         self.target = target
         self.dataset: Dataset = dataset
         self.random_state = random_state
@@ -31,7 +32,7 @@ class RandomForestRegressionRunner:
 
         self.pipeline.add(OrdinalConverter(cat_vars=cat_vars))
 
-        self.pipeline.add(RandomForestRegressorStep())
+        self.pipeline.add(RandomForestRegressorStep(random_state=self.random_state))
 
         self.pipeline.fit()
 

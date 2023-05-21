@@ -22,8 +22,10 @@ class Dataset:
 
 
 class Model:
-    def __init__(self):
-        self.name = None
+    def __init__(self, name: str, score: float, pipeline):
+        self.name = name
+        self.score = score
+        self.pipeline = pipeline
 
     def save(self, path: str):
         raise NotImplementedError
