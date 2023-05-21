@@ -35,7 +35,7 @@ class XGBRegressionRunner:
 
         self.pipeline.add(OrdinalConverter(cat_vars=cat_vars))
 
-        self.pipeline.add(HyperParameterOptimizationStep())
+        self.pipeline.add(HyperParameterOptimizationStep(random_state=self.random_state))
 
         self.pipeline.add(XGBRegressorStep())
 

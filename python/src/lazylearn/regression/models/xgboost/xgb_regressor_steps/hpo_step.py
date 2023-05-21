@@ -30,6 +30,7 @@ class HyperParameterOptimizationStep(PipelineStep):
             n_jobs=-1,
             cv=cv,
             verbose=1,
+            random_state=self.random_state
         )
         pipeline.regressor = xgbtunedreg
 
