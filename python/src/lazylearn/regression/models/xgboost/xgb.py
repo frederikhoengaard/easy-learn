@@ -4,6 +4,7 @@ from preprocessing.encoding.encoders import OrdinalConverter
 from regression.models.xgboost.xgb_regressor_steps.regressor_step import (
     XGBRegressorStep,
 )
+from regression.models.xgboost.xgb_regressor_steps.hpo_step import HyperParameterOptimizationStep  # noqa
 
 
 class XGBRegressionRunner:
@@ -32,7 +33,9 @@ class XGBRegressionRunner:
 
         self.pipeline.add(OrdinalConverter(cat_vars=cat_vars))
 
-        self.pipeline.add(XGBRegressorStep(random_state=self.random_state))
+        self.pipeline.add(HyperParameterOptimizationStep())
+
+        self.pipeline.add(XGBRegressorStep())
 
         self.pipeline.fit()
 
