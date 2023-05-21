@@ -2,7 +2,6 @@ from pipeline.pipeline import PipelineStep, RegressionPipeline
 
 
 class XGBRegressorStep(PipelineStep):
-
     def fit(self, pipeline: RegressionPipeline):
         pipeline.feature_list = [
             item for item in pipeline.feature_list if item != pipeline.target
