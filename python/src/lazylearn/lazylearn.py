@@ -13,7 +13,7 @@ class LazyLearner:
         self.dataset = None
         self.task = None
         self.models = None
-        self.leaderboard = None
+        self._leaderboard = None
         self.random_state = random_state
         self.target = None
 
@@ -56,7 +56,9 @@ class LazyLearner:
             target=self.target,
             random_state=self.random_state,
         )
-        self.leaderboard = sorted([model for model in sb.models], key=lambda x: x.score)
+        self._leaderboard = sorted(
+            [model for model in sb.models], key=lambda x: x.score
+        )
 
-    def get_leaderboard(self):
-        return [(item.name, item.score) for item in self.leaderboard]
+    def leaderboard(self):
+        return [(item.name, item.score) for item in self._leaderboard]

@@ -32,7 +32,9 @@ class RandomForestRegressionRunner:
 
         self.pipeline.add(OrdinalConverter(cat_vars=cat_vars))
 
-        self.pipeline.add(RandomForestRegressorStep(random_state=self.random_state))
+        self.pipeline.add(
+            RandomForestRegressorStep(random_state=self.random_state)
+        )  # noqa
 
         self.pipeline.fit()
 

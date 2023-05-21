@@ -1,7 +1,9 @@
 from models.models import Dataset
 from pipeline.pipeline import RegressionPipeline
 from preprocessing.encoding.encoders import OrdinalConverter
-from regression.models.xgboost.xgb_regressor_steps.regressor_step import XGBRegressorStep
+from regression.models.xgboost.xgb_regressor_steps.regressor_step import (
+    XGBRegressorStep,
+)
 
 
 class XGBRegressionRunner:

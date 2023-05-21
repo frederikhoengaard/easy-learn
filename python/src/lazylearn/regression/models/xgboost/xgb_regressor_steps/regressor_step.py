@@ -4,7 +4,9 @@ from xgboost import XGBRegressor
 
 class XGBRegressorStep(PipelineStep):
     def __init__(self, random_state=None):
-        self.regressor = XGBRegressor(n_estimators=1000, random_state=random_state)
+        self.regressor = XGBRegressor(
+            n_estimators=1000, random_state=random_state
+        )  # noqa
 
     def fit(self, pipeline: RegressionPipeline):
         pipeline.feature_list = [

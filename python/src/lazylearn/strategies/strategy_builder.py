@@ -1,5 +1,7 @@
 from models.models import Model
-from regression.models.randomforest.randomforest import RandomForestRegressionRunner
+from regression.models.randomforest.randomforest import (  # noqa
+    RandomForestRegressionRunner,
+)
 from regression.models.xgboost.xgb import XGBRegressionRunner
 from sklearn.metrics import mean_absolute_error
 
@@ -17,13 +19,12 @@ class StrategyBuilder:
         self.start()
 
     def build(self):
-        # TODO: Make sure pipelines are not overwriting data for each other
         if self.task == "regression":
             self.strategies.append(
                 XGBRegressionRunner(
                     target=self.target,
                     dataset=self.dataset,
-                    random_state=self.random_state  # noqa
+                    random_state=self.random_state,  # noqa
                 )
             )
             self.strategies.append(
@@ -42,7 +43,7 @@ class StrategyBuilder:
             strategy.fit()
 
             # get holdout scores
-            strategy.predict(self.dataset.partitions["test"])
+            strategy.predict(self.dataset.partitions["test"].copy())
             strategy.pipeline.holdout_score = mean_absolute_error(
                 self.dataset.partitions["test"][self.target],
                 strategy.pipeline.tmp_pred,
