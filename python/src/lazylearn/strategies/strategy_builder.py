@@ -1,7 +1,8 @@
-from sklearn.metrics import mean_absolute_error
-
 from models.models import Model
 from regression.models.randomforest.randomforest import RandomForestRegressionRunner
+from regression.models.xgboost.xgb import XGBRegressionRunner
+from sklearn.metrics import mean_absolute_error
+
 
 class StrategyBuilder:
     def __init__(self, task, dataset, target, random_state=None):
@@ -16,7 +17,15 @@ class StrategyBuilder:
         self.start()
 
     def build(self):
+        # TODO: Make sure pipelines are not overwriting data for each other
         if self.task == "regression":
+            self.strategies.append(
+                XGBRegressionRunner(
+                    target=self.target,
+                    dataset=self.dataset,
+                    random_state=self.random_state  # noqa
+                )
+            )
             self.strategies.append(
                 RandomForestRegressionRunner(
                     target=self.target,
@@ -24,6 +33,7 @@ class StrategyBuilder:
                     random_state=self.random_state,  # noqa
                 )
             )
+
         else:
             raise ValueError("Unsupported task!")
 
@@ -38,5 +48,10 @@ class StrategyBuilder:
                 strategy.pipeline.tmp_pred,
             )
 
-            self.models.append(Model(name=strategy.name, score=strategy.pipeline.holdout_score, pipeline=strategy))
-
+            self.models.append(
+                Model(
+                    name=strategy.name,
+                    score=strategy.pipeline.holdout_score,
+                    pipeline=strategy,
+                )
+            )

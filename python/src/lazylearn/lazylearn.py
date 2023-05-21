@@ -50,9 +50,13 @@ class LazyLearner:
 
         :return:
         """
-        sb = StrategyBuilder(task=self.task, dataset=self.dataset, target=self.target, random_state=self.random_state)
+        sb = StrategyBuilder(
+            task=self.task,
+            dataset=self.dataset,
+            target=self.target,
+            random_state=self.random_state,
+        )
         self.leaderboard = sorted([model for model in sb.models], key=lambda x: x.score)
 
     def get_leaderboard(self):
         return [(item.name, item.score) for item in self.leaderboard]
-
