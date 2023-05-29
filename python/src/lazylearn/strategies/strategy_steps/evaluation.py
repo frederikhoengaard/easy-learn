@@ -24,4 +24,4 @@ class Evaluator:
         }
 
     def evaluate(self, task, y_pred, y_true):
-        return {name: func(y_true, y_pred) for name, func in self.metrics[task]}
+        return {name: func(y_true, y_pred) for name, func in self.metrics[task]}  # noqa
