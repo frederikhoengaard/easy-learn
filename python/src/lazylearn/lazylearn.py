@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from ingestion.ingestion_pipeline import Ingestion
 from model_selection.splitters import (  # noqa
     test_train_splitter,
@@ -14,6 +16,10 @@ from strategies.strategy_builder import StrategyBuilder
 
 
 class LazyLearner:
+    """
+    TODO: Introduce LazyLearner
+    """
+
     def __init__(self, random_state=None):
         self.dataset: Dataset = None
         self.task: str = None
@@ -105,5 +111,11 @@ class LazyLearner:
             [model for model in sb.models], key=lambda x: x.score[self.metric]
         )
 
-    def leaderboard(self):
+    def leaderboard(self) -> List[Tuple[str, float]]:
+        """
+        Method to retrieve the sorted leaderboard of evaluated
+        models.
+
+        :return: List of tuples of model names and their scores
+        """
         return [(item.name, item.score) for item in self._leaderboard]
