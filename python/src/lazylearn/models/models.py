@@ -1,3 +1,5 @@
+from typing import Dict
+
 from pandas import DataFrame
 
 
@@ -11,7 +13,7 @@ class Dataset:
     ):
         self.name = None
         self.description = None
-        self.df = df
+        self.df: DataFrame = df
         self.column_type_map = column_type_map
         self.summary_stats = summary_stats
         self.type_collections = type_collections
@@ -22,7 +24,7 @@ class Dataset:
 
 
 class Model:
-    def __init__(self, name: str, score: float, pipeline):
+    def __init__(self, name: str, score: Dict[str, float], pipeline):
         self.name = name
         self.score = score
         self.pipeline = pipeline

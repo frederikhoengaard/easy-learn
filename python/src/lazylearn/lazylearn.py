@@ -72,8 +72,12 @@ class LazyLearner:
             self.dataset.df = self.dataset.df.sort_values(
                 by=self.otv_config["column"]
             )  # noqa
+
             self.dataset = time_test_train_splitter(
-                self.dataset, test_size=test_size
+                self.dataset,
+                test_size=test_size,
+                split_date=otv_config["column"],
+                split_column=otv_config["column"],
             )  # noqa
         else:
             self.dataset = test_train_splitter(
