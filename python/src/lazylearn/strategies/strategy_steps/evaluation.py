@@ -1,3 +1,5 @@
+from typing import Dict
+
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
@@ -23,5 +25,5 @@ class Evaluator:
             ],
         }
 
-    def evaluate(self, task, y_pred, y_true):
+    def evaluate(self, task: str, y_pred, y_true) -> Dict[str, float]:
         return {name: func(y_true, y_pred) for name, func in self.metrics[task]}  # noqa

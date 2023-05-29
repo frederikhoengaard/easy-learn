@@ -1,5 +1,10 @@
 from ingestion.ingestion_pipeline import Ingestion
-from model_selection.splitters import test_train_splitter
+from model_selection.splitters import (  # noqa
+    test_train_splitter,
+    time_test_train_splitter,
+)
+from models.models import Dataset
+from pandas import DataFrame
 from preprocessing.time.date_processor import date_processor
 from preprocessing.time.duration import duration_builder
 from regression.models.randomforest.randomforest import (  # noqa
@@ -10,15 +15,35 @@ from strategies.strategy_builder import StrategyBuilder
 
 class LazyLearner:
     def __init__(self, random_state=None):
-        self.dataset = None
-        self.task = None
+        self.dataset: Dataset = None
+        self.task: str = None
         self.models = None
         self._leaderboard = None
-        self.random_state = random_state
-        self.target = None
+        self.random_state: int = random_state
+        self.target: str = None
         self.metric = None
+        self.otv_config: dict = None
 
-    def create_project(self, data, target, task="infer", metric="default"):
+    def create_project(
+        self,
+        data: DataFrame,
+        target: str,
+        task="infer",
+        metric="default",
+        test_size: float = 0.2,
+        otv_config: dict = None,
+    ):
+        """
+        Method to initialise a LazyLearn project.
+
+        :param data: pandas DataFrame containing feature and target columns
+        :param target: string of target column name
+        :param task: "regression", "classification" or "infer"
+        :param metric: metric by which to rank models
+        :param test_size: share of dataset to use for holdout
+        :param otv_config: out-of-time validation configuration
+        :return:
+        """
         # ingest data
         self.target = target
         self.dataset = Ingestion().run(data)
@@ -39,17 +64,30 @@ class LazyLearner:
 
         # split partitions
 
-        self.dataset = test_train_splitter(
-            self.dataset, random_state=self.random_state
-        )  # noqa
+        if otv_config is not None:
+            assert (
+                otv_config["column"] in self.dataset.column_type_map["datetime"]  # noqa
+            )
+            self.otv_config = otv_config
+            self.dataset.df = self.dataset.df.sort_values(
+                by=self.otv_config["column"]
+            )  # noqa
+            self.dataset = time_test_train_splitter(
+                self.dataset, test_size=test_size
+            )  # noqa
+        else:
+            self.dataset = test_train_splitter(
+                self.dataset,
+                test_size=test_size,
+                random_state=self.random_state,  # noqa
+            )
 
         # set modelling configurations
 
     def run_autopilot(self):
         """
-        TODO: Everything here must be abstracted away into strategies
-        TODO: such that several models are run and their scores are added to
-        TODO: the leaderboard
+        Trigger build and subsequent runs of modelling
+        strategies.
 
         :return:
         """
