@@ -3,7 +3,7 @@ from regression.models.randomforest.randomforest import (  # noqa
     RandomForestRegressionRunner,
 )
 from regression.models.xgboost.xgb import XGBRegressionRunner
-from sklearn.metrics import mean_absolute_error
+from strategies.strategy_steps.evaluation import Evaluator
 
 
 class StrategyBuilder:
@@ -44,7 +44,8 @@ class StrategyBuilder:
 
             # get holdout scores
             strategy.predict(self.dataset.partitions["test"].copy())
-            strategy.pipeline.holdout_score = mean_absolute_error(
+            strategy.pipeline.holdout_score = Evaluator().evaluate(
+                self.task,
                 self.dataset.partitions["test"][self.target],
                 strategy.pipeline.tmp_pred,
             )

@@ -19,7 +19,27 @@ Current stable version is 0.0.3. The upcoming updates will support:
 
 ## Usage
 
-Using lazy-learn revolves around the `LazyLearner` class. You can think of it as a kind of project, and it is the wrapper for any experiment within lazy-learn.
+Using lazy-learn revolves around the `LazyLearner` class. You can think of it as a kind of project, and it is the wrapper for any experiment within lazy-learn. You can consider a simple example with the California Housing dataset:
+
+```python
+from lazylearn import LazyLearner
+from sklearn.datasets import fetch_california_housing
+
+
+# get some data
+data = fetch_california_housing(as_frame=True)
+df = data["data"]
+df["MedHouseVal"] = data["target"]
+
+# instantiate and run the LazyLearner
+learner = LazyLearner()
+learner.create_project(data=df, target="MedHouseVal")
+learner.run_autopilot()
+
+# evaluate results
+print(learner.leaderboard())
+
+```
 
 ## Installation
 

@@ -16,8 +16,9 @@ class LazyLearner:
         self._leaderboard = None
         self.random_state = random_state
         self.target = None
+        self.metric = None
 
-    def create_project(self, data, target, task="infer"):
+    def create_project(self, data, target, task="infer", metric="default"):
         # ingest data
         self.target = target
         self.dataset = Ingestion().run(data)
@@ -26,6 +27,8 @@ class LazyLearner:
             # if target is numeric then regression, else classification
             if self.dataset.column_type_map[target] == "numeric":
                 self.task = "regression"
+                if metric == "default":
+                    self.metric = "mse"
             else:
                 self.task = "classification"
 
@@ -57,7 +60,7 @@ class LazyLearner:
             random_state=self.random_state,
         )
         self._leaderboard = sorted(
-            [model for model in sb.models], key=lambda x: x.score
+            [model for model in sb.models], key=lambda x: x.score[self.metric]
         )
 
     def leaderboard(self):
