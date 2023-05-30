@@ -10,8 +10,8 @@ The aim of lazy-learn is exactly that. Given a dataset, lazy-learn will analyse 
 Current stable version is 0.0.3. The upcoming updates will support:
 - Abstract construction of model architectures
 - XGBoost, LightGBM, Adaboost and Catboost architectures
-- Time partitioning of datasets
-- Automated Hyperparameter Optimisation (HPO)
+- Time partitioning of datasets (Added in 0.0.4)
+- Automated Hyperparameter Optimisation (HPO) (Added in 0.0.4)
 - Text features
 - An interface to AutoGluon
 - Outlier detection and handling
