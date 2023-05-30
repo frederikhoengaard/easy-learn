@@ -74,3 +74,4 @@ class RegressionPipeline(ModelPipeline):
         self.holdout_features_df: DataFrame = None
         self.holdout_targets: Series = None
         self.holdout_score: float = None
+        self.regressor = None

@@ -1,14 +1,17 @@
 from models.models import Dataset
 from pipeline.pipeline import RegressionPipeline
 from preprocessing.encoding.encoders import OrdinalConverter
-from regression.models.randomforest.random_forest_steps.regressor_step import (
-    RandomForestRegressorStep,
+from regression.models.xgboost.xgb_regressor_steps.hpo_step import (  # noqa
+    HyperParameterOptimizationStep,
+)
+from regression.models.xgboost.xgb_regressor_steps.regressor_step import (
+    XGBRegressorStep,
 )
 
 
-class RandomForestRegressionRunner:
+class XGBRegressionRunner:
     def __init__(self, target, dataset, random_state=None):
-        self.name = "RandomForestRegressor"
+        self.name = "XGBRegressor"
         self.target = target
         self.dataset: Dataset = dataset
         self.random_state = random_state
@@ -33,8 +36,10 @@ class RandomForestRegressionRunner:
         self.pipeline.add(OrdinalConverter(cat_vars=cat_vars))
 
         self.pipeline.add(
-            RandomForestRegressorStep(random_state=self.random_state)
-        )  # noqa
+            HyperParameterOptimizationStep(random_state=self.random_state)
+        )
+
+        self.pipeline.add(XGBRegressorStep())
 
         self.pipeline.fit()
 
