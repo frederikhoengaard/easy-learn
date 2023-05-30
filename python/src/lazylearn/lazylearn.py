@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+import pandas as pd
 from ingestion.ingestion_pipeline import Ingestion
 from model_selection.splitters import (  # noqa
     test_train_splitter,
@@ -17,7 +18,14 @@ from strategies.strategy_builder import StrategyBuilder
 
 class LazyLearner:
     """
-    TODO: Introduce LazyLearner
+    This class implements the LazyLearner, an object that
+    runs AutoML for regression and classification given a
+    dataset.
+
+    To run an experiment with LazyLearn, instantiate the class,
+    the add a dataset and configure the project through the
+    create_project() method. To trigger the modelling process,
+    call the run_autopilot() method with the desired mode.
     """
 
     def __init__(self, random_state=None):
@@ -47,7 +55,11 @@ class LazyLearner:
         :param task: "regression", "classification" or "infer"
         :param metric: metric by which to rank models
         :param test_size: share of dataset to use for holdout
-        :param otv_config: out-of-time validation configuration
+        :param otv_config: out-of-time validation configuration of the form
+            otv_config = {
+                "column" = "column_to_time_partition_on",
+                "holdout_start_date" = "YYYYMMDD"
+            }
         :return:
         """
         # ingest data
@@ -72,7 +84,8 @@ class LazyLearner:
 
         if otv_config is not None:
             assert (
-                otv_config["column"] in self.dataset.column_type_map["datetime"]  # noqa
+                otv_config["column"]
+                in self.dataset.type_collections["datetime"]  # noqa
             )
             self.otv_config = otv_config
             self.dataset.df = self.dataset.df.sort_values(
@@ -82,7 +95,7 @@ class LazyLearner:
             self.dataset = time_test_train_splitter(
                 self.dataset,
                 test_size=test_size,
-                split_date=otv_config["column"],
+                split_date=pd.to_datetime(otv_config["holdout_start_date"]),
                 split_column=otv_config["column"],
             )  # noqa
         else:
